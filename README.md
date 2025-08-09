@@ -1,29 +1,136 @@
-# Create T3 App
+# AI-Powered Music Generation SaaS
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## 📌 Core Purpose
+Build an AI-powered music generation SaaS where users describe a track or provide lyrics/styles, and the system generates:
 
-## What's next? How do I make an app with this?
+- 🎵 A full song using **ACE-Step** with optional lyric alignment  
+- 🖼 An album-cover thumbnail via **SDXL Turbo**  
+- 🏷 Auto-categorization of the track using an **LLM**  
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+Provide a streamlined web experience to **create, queue, monitor, play, publish, and download** generated songs.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+---
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## ✨ Key Features
 
-## Learn More
+- **Text-to-music** via ACE-Step with configurable parameters:
+  - Duration  
+  - Guidance scale  
+  - Steps  
+  - Seed  
+  - Instrumental toggle  
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+- **Three generation modes**:
+  1. Full description only *(auto-prompt + auto-lyrics if not instrumental)*
+  2. Prompt + custom lyrics
+  3. Prompt + described lyrics *(auto-lyrics from description)*
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- Automatic cover art generation (**SDXL Turbo**)  
+- Automatic genre/category tagging (**LLM**)  
+- Background job orchestration & status tracking *(queued → processing → processed/failed)*  
+- Personal library:
+  - Search  
+  - Play  
+  - Publish/Unpublish  
+  - Rename  
+  - Download  
+- Email + password authentication  
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+---
 
-## How do I deploy this?
+## 🛠 Technical Stack
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+### **Frontend**
+- **Framework:** Next.js 15 (App Router), React 19, TypeScript  
+- **UI:** Tailwind CSS, Radix primitives, custom components under `src/components/ui`  
+- **State Management:** Zustand (player store)  
+- **Auth:** better-auth with Prisma adapter & custom tables  
+- **Job Orchestration:** Inngest (`src/inngest`)  
+
+### **Backend (Model Serving)**
+- **Modal serverless GPU app:** `modal.App("music-generator")`
+  - ACE-Step music pipeline
+  - Qwen2-7B-Instruct for prompt/lyrics/category generation
+  - SDXL Turbo for thumbnail images
+- **API:** Pydantic-based request/response models, FastAPI-like endpoints via Modal
+
+### **Data & Storage**
+- **Database:** PostgreSQL via Prisma  
+- **Storage:** Supabase Storage (`music-bucket`) for audio & thumbnails  
+
+---
+
+## 🔄 Flow Overview
+
+1. **User Action:** Creates a `Song` DB record & emits an **Inngest** event.  
+2. **Inngest Handler:** Selects the appropriate Modal endpoint & sends a generation request.  
+3. **Modal Worker:**
+   - Runs ACE-Step to create audio  
+   - Runs SDXL Turbo to create image  
+   - Uses LLM to generate categories  
+   - Uploads assets to Supabase  
+4. **Backend:** Returns storage paths & categories.  
+5. **Frontend:** Updates `Song` record with URLs & connected category relations.  
+
+---
+
+## 📂 Data Models
+
+### **User**
+- Core profile info  
+- Auth relationships (Session, Account)  
+- Relations: songs, likes  
+
+### **Song**
+- **Fields:** `id`, `title`, `status` (`queued` | `processing` | `processed` | `failed`), `published`  
+- **Input Params:** `instrumental`, `prompt`, `lyrics`, `fullDescribedSong`, `describedLyrics`, `guidanceScale`, `inferStep`, `audioDuration`, `seed`  
+- **Output:** `audioPath`, `thumbnailPath`  
+- Relations: `user` (owner), `categories`, `likes`  
+- Index: `audioPath`  
+
+### **Category**
+- `id`, `name` (unique)  
+- Many-to-many with Song (auto `connectOrCreate` on generation)  
+
+### **Like**
+- Composite key: (`userId`, `songId`)  
+- Relations: user, song  
+
+---
+
+## 🎛 UX Flow
+
+### **Create Page** (`/create`)
+- **Simple Mode:**
+  - One text area to “Describe your song”  
+  - Toggle: Instrumental  
+  - Optional: “Generate Variations”  
+
+- **Custom Mode:**
+  - Lyrics: Write or Auto *(describe lyrics)*  
+  - Toggle: Instrumental  
+  - Optional: Variations  
+  - Styles: Style tags input with quick-add chips  
+
+- **One-click Create:** Queues 1–2 jobs (variations use different guidance scales)  
+
+### **Track List**
+- Live search  
+- Status-aware track entries:
+  - Failed  
+  - Queued/Processing (spinners)  
+  - Ready  
+- Ready tracks:
+  - Thumbnail (or placeholder)  
+  - Quick Play  
+  - Download  
+  - Rename  
+  - Publish/Unpublish  
+- Clicking a track loads it into the **global player store** for playback  
+
+---
+
+## 🎯 Target Audience
+- **Creators, producers, hobbyists** → Rapid ideation from descriptions or lyric ideas  
+- **Content teams** → On-demand royalty-free audio with auto-tagging & quick thumbnails  
+- **Developers** → Integrating generation via Modal endpoints & Supabase-backed assets  
