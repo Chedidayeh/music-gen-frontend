@@ -21,6 +21,7 @@ declare module "next-auth" {
 
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   callbacks: {
     async session({ token,session }) {
       if(token.sub && session.user){
@@ -31,7 +32,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return session
     },
-    async jwt ({token , trigger , session   }) {
+    async jwt ({token    }) {
       if(!token.sub) return token
       // Note: Removed Prisma call from JWT callback to avoid edge runtime issues
       return token
@@ -40,5 +41,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter : PrismaAdapter(db),
   session : {strategy : "jwt" , 
   },
-  ...authConfig,
 })

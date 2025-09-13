@@ -3,18 +3,28 @@
 import { ArrowRight, Music, CheckCircle, ChevronRight, Sparkles, Headphones, Mic, Download, Heart } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { GoogleLogin } from "~/app/actions"
 import { Button } from "~/components/ui/button"
 
 export default function Page() {
     const { status } = useSession()
     const isSignedIn = status === 'authenticated'
+    const router = useRouter()
 
     const handleClick = async () => {
         try {
             await GoogleLogin();
         } catch (error) {
             console.error("An error occurred during Google Login:", error);
+        }
+    };
+
+    const SignOutUser = () => {
+        try {
+            router.push("/api/auth/logout");
+        } catch (error) {
+            console.error('Error signing out:', error);
         }
     };
 
@@ -33,9 +43,16 @@ export default function Page() {
                         </div>
                         <div className="flex items-center gap-4">
                             {isSignedIn ? (
-                                <Button asChild className="bg-purple-600 hover:bg-purple-700">
-                                    <Link href="/dashboard">Dashboard</Link>
-                                </Button>
+                                <div className="flex items-center justify-center gap-2">
+
+
+                                    <Button asChild className="bg-purple-600 hover:bg-purple-700">
+                                        <Link href="/dashboard">Dashboard</Link>
+                                    </Button>
+                                    <Button onClick={SignOutUser} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 cursor-pointer">
+                                        Sign out
+                                    </Button>
+                                </div>
                             ) : (
                                 <>
                                     <Button onClick={handleClick} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 cursor-pointer">
@@ -114,7 +131,7 @@ export default function Page() {
                             Create professional-quality music with advanced AI technology
                         </p>
                     </div>
-                    
+
                     <div className="grid md:grid-cols-3 gap-8">
                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center hover:shadow-lg transition-shadow">
                             <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
@@ -125,7 +142,7 @@ export default function Page() {
                                 Describe your song idea and let AI generate the perfect melody, rhythm, and arrangement.
                             </p>
                         </div>
-                        
+
                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center hover:shadow-lg transition-shadow">
                             <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                                 <Headphones className="w-6 h-6 text-white" />
@@ -135,7 +152,7 @@ export default function Page() {
                                 Write your own lyrics or let AI generate them based on your description and style preferences.
                             </p>
                         </div>
-                        
+
                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center hover:shadow-lg transition-shadow">
                             <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                                 <Download className="w-6 h-6 text-white" />

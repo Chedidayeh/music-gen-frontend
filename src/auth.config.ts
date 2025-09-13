@@ -3,28 +3,7 @@ import Google from "next-auth/providers/google"
 
 
 export  default {
-    pages: {
-        signIn: "/auth/sign-in",
-    },
-    callbacks: {
-        authorized({ auth, request: { nextUrl } }) {
-            const isLoggedIn = !!auth?.user;
-            const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-            const isOnCreate = nextUrl.pathname.startsWith("/create");
-            const isOnAuth = nextUrl.pathname.startsWith("/auth");
-            
-            if (isOnDashboard || isOnCreate) {
-                if (isLoggedIn) return true;
-                return false; // Redirect unauthenticated users to login page
-            }
-            
-            if (isLoggedIn && isOnAuth) {
-                return Response.redirect(new URL("/dashboard", nextUrl));
-            }
-            
-            return true;
-        },
-    },
+
     providers: [
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID as string,

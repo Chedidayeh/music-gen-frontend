@@ -1,7 +1,7 @@
 
 import authConfig from "./auth.config";
 import NextAuth from "next-auth";
-const PROTECTED_ROUTES = ['/', '/dashboard/create', '/dashbaord', '/api/auth/logout']
+const PROTECTED_ROUTES = ['/dashboard', '/dashboard/create', '/api/auth/logout']
 import { auth as a } from '~/auth'
 const { auth } = NextAuth(authConfig);
 
