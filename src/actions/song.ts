@@ -1,15 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "~/lib/auth";
+import { auth } from "~/auth";
 import { db } from "~/server/db";
 
 export async function setPublishedStatus(songId: string, published: boolean) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await auth()
 
   if (!session) redirect("/auth/sign-in");
 
@@ -23,13 +20,11 @@ export async function setPublishedStatus(songId: string, published: boolean) {
     },
   });
 
-  revalidatePath("/create");
+  revalidatePath("/dashboard/create");
 }
 
 export async function renameSong(songId: string, newTitle: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await auth()
 
   if (!session) redirect("/auth/sign-in");
 
@@ -43,13 +38,11 @@ export async function renameSong(songId: string, newTitle: string) {
     },
   });
 
-  revalidatePath("/create");
+  revalidatePath("/dashboard/create");
 }
 
 export async function toggleLikeSong(songId: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await auth()
 
   if (!session) redirect("/auth/sign-in");
 

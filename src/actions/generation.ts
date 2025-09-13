@@ -1,10 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { auth } from "~/auth";
 import { inngest } from "~/inngest/client";
-import { auth } from "~/lib/auth";
 import { db } from "~/server/db";
 // import { supabase } from "~/lib/supabase";
 
@@ -17,9 +16,7 @@ export interface GenerateRequest {
 }
 
 export async function generateSong(generateRequest: GenerateRequest, generateVariations: boolean = false) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await auth()
 
   if (!session) redirect("/auth/sign-in");
 
@@ -30,7 +27,7 @@ export async function generateSong(generateRequest: GenerateRequest, generateVar
     await queueSong(generateRequest, 15, session.user.id);
   }
 
-  revalidatePath("/create");
+  revalidatePath("/dashboard/create");
 }
 
 export async function queueSong(
@@ -66,9 +63,7 @@ export async function queueSong(
 }
 
 export async function getPlayUrl(songId: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await auth()
 
   if (!session) redirect("/auth/sign-in");
 

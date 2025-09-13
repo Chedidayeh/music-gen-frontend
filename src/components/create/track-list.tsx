@@ -80,16 +80,16 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
   );
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-scroll">
+    <div className="flex flex-1 flex-col overflow-y-scroll bg-white">
       <div className="flex-1 p-6">
         <div className="mb-4 flex items-center justify-between gap-4">
           <div className="relative max-w-md flex-1">
-            <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+            <Search className="text-gray-400 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search..."
-              className="pl-10"
+              className="pl-10 border-gray-300 focus:border-purple-500"
             />
           </div>
           <Button
@@ -97,6 +97,7 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
             variant="outline"
             size="sm"
             onClick={handleRefresh}
+            className="border-gray-300 text-gray-700 hover:bg-gray-50"
           >
             {isRefreshing ? (
               <Loader2 className="mr-2 animate-spin" />
@@ -116,16 +117,16 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                   return (
                     <div
                       key={track.id}
-                      className="flex cursor-not-allowed items-center gap-4 rounded-lg p-3"
+                      className="flex cursor-not-allowed items-center gap-4 rounded-lg p-3 bg-red-50 border border-red-200"
                     >
-                      <div className="bg-destructive/10 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md">
-                        <XCircle className="text-destructive h-6 w-6" />
+                      <div className="bg-red-100 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md">
+                        <XCircle className="text-red-600 h-6 w-6" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-destructive truncate text-sm font-medium">
+                        <h3 className="text-red-800 truncate text-sm font-medium">
                           Generation failed
                         </h3>
-                        <p className="text-muted-foreground truncate text-xs">
+                        <p className="text-red-600 truncate text-xs">
                           Something went wrong while generating this song.
                         </p>
                       </div>
@@ -137,16 +138,16 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                   return (
                     <div
                       key={track.id}
-                      className="flex cursor-not-allowed items-center gap-4 rounded-lg p-3"
+                      className="flex cursor-not-allowed items-center gap-4 rounded-lg p-3 bg-gray-50 border border-gray-200"
                     >
-                      <div className="bg-muted flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md">
-                        <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+                      <div className="bg-gray-100 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md">
+                        <Loader2 className="text-gray-600 h-6 w-6 animate-spin" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-muted-foreground truncate text-sm font-medium">
+                        <h3 className="text-gray-700 truncate text-sm font-medium">
                           Processing song...
                         </h3>
-                        <p className="text-muted-foreground truncate text-xs">
+                        <p className="text-gray-500 truncate text-xs">
                           Refresh to check the status.
                         </p>
                       </div>
@@ -157,7 +158,7 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                   return (
                     <div
                       key={track.id}
-                      className="hover:bg-muted/50 flex cursor-pointer items-center gap-4 rounded-lg p-3 transition-colors"
+                      className="hover:bg-gray-50 flex cursor-pointer items-center gap-4 rounded-lg p-3 transition-colors border border-gray-200"
                       onClick={() => handleTrackSelect(track)}
                     >
                       {/* Thumbnail */}
@@ -168,8 +169,8 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                             src={track.thumbnailUrl}
                           />
                         ) : (
-                          <div className="bg-muted flex h-full w-full items-center justify-center">
-                            <Music className="text-muted-foreground h-6 w-6" />
+                          <div className="bg-gray-100 flex h-full w-full items-center justify-center">
+                            <Music className="text-gray-400 h-6 w-6" />
                           </div>
                         )}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
@@ -184,14 +185,14 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                       {/* Track info */}
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <h3 className="trucate text-sm font-medium">
+                          <h3 className="trucate text-sm font-medium text-gray-900">
                             {track.title}
                           </h3>
                           {track.instrumental && (
-                            <Badge variant="outline">Instrumental</Badge>
+                            <Badge variant="outline" className="border-gray-300 text-gray-600">Instrumental</Badge>
                           )}
                         </div>
-                        <p className="text-muted-foreground truncate text-xs">
+                        <p className="text-gray-600 truncate text-xs">
                           {track.prompt}
                         </p>
                       </div>
@@ -208,23 +209,24 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                           }}
                           variant="outline"
                           size="sm"
-                          className={`cursor-pointer ${track.published ? "border-red-200" : ""}`}
+                          className={`cursor-pointer border-gray-300 text-gray-700 hover:bg-gray-50 ${track.published ? "border-red-300 text-red-700 hover:bg-red-50" : ""}`}
                         >
                           {track.published ? "Unpublish" : "Publish"}
                         </Button>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-100">
                               <MoreHorizontal />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuContent align="end" className="w-40 bg-white border border-gray-200">
                             <DropdownMenuItem
                               onClick={async (e) => {
                                 e.stopPropagation();
                                 const playUrl = await getPlayUrl(track.id);
                                 window.open(playUrl!, "_blank");
                               }}
+                              className="text-gray-700 hover:bg-gray-50"
                             >
                               <Download className="mr-2" /> Download
                             </DropdownMenuItem>
@@ -233,6 +235,7 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                                 e.stopPropagation();
                                 setTrackToRename(track);
                               }}
+                              className="text-gray-700 hover:bg-gray-50"
                             >
                               <Pencil className="mr-2" /> Rename
                             </DropdownMenuItem>
@@ -245,9 +248,9 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
             })
           ) : (
             <div className="flex flex-col items-center justify-center pt-20 text-center">
-              <Music className="text-muted-foreground h-10 w-10" />
-              <h2 className="mt-4 text-lg font-semibold">No Music Yet</h2>
-              <p className="text-muted-foreground mt-1 text-sm">
+              <Music className="text-gray-400 h-10 w-10" />
+              <h2 className="mt-4 text-lg font-semibold text-gray-900">No Music Yet</h2>
+              <p className="text-gray-600 mt-1 text-sm">
                 {searchQuery
                   ? "No tracks match your search."
                   : "Create your first song to get started."}

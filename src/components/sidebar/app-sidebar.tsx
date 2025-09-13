@@ -1,6 +1,6 @@
 "use server";
 
-import { UserButton } from "@daveyplate/better-auth-ui";
+import { Music } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -17,9 +17,15 @@ export async function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-primary mt-4 mb-12 flex flex-col items-start justify-start px-2 text-3xl font-black tracking-widest uppercase">
-            <p>Music</p>
-            <p className="text-lg">Generator</p>
+          <SidebarGroupLabel className="text-primary mt-4 mb-12 flex flex-col items-start justify-start px-2 text-3xl font-black tracking-widest">
+          <div className="flex items-center space-x-2">
+                            <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                                <Music className="w-5 h-5 text-white" />
+
+                            </div>
+                            <span className="text-xl font-bold text-gray-900">MelodyAI</span>
+
+                        </div>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -29,7 +35,6 @@ export async function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <UserButton variant="outline" />
       </SidebarFooter>
     </Sidebar>
   );

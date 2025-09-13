@@ -1,17 +1,13 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 // import { getThumbnailUrl } from "~/actions/generation";
-import { auth } from "~/lib/auth";
+import { auth } from "~/auth";
 import { db } from "~/server/db";
 import { TrackList } from "./track-list";
 
 export default async function TrackListFetcher() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
+  const session = await auth()
   if (!session) {
     redirect("/auth/sign-in");
   }

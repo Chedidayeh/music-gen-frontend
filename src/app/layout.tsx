@@ -2,12 +2,12 @@ import "~/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
-import { Providers } from "~/components/providers";
 import { Toaster } from "~/components/ui/sonner";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
-  title: "Music Generator",
-  description: "Music Generator",
+  title: "MelodyAI - AI Music Generation",
+  description: "Create music with AI magic. Generate original songs from text descriptions.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
@@ -20,13 +20,15 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
+    <SessionProvider>
+
     <html lang="en" className={`${geist.variable}`}>
-      <body className="flex min-h-svh flex-col">
-        <Providers>
+      <body>
           {children}
           <Toaster />
-        </Providers>
       </body>
     </html>
+    </SessionProvider>
+
   );
 }

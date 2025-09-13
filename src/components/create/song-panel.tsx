@@ -7,8 +7,8 @@ import { Button } from "../ui/button";
 import { Loader2, Music, Plus } from "lucide-react";
 import { Switch } from "../ui/switch";
 import { Badge } from "../ui/badge";
-import { toast } from "sonner";
 import { generateSong, type GenerateRequest } from "~/actions/generation";
+import { toast } from "sonner";
 
 const inspirationTags = [
   "80s synth-pop",
@@ -123,7 +123,7 @@ export function SongPanel() {
       <div className="flex-1 overflow-y-auto p-4">
         <Tabs
           value={mode}
-          onValueChange={(value) => setMode(value as "simple" | "custom")}
+          onValueChange={(value: string) => setMode(value as "simple" | "custom")}
         >
           <TabsList className="w-full">
             <TabsTrigger value="simple">Simple</TabsTrigger>

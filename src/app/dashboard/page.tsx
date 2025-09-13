@@ -2,17 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Music } from "lucide-react";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 // import { getThumbnailUrl } from "~/actions/generation";
 import { SongCard } from "~/components/home/song-card";
-import { auth } from "~/lib/auth";
+import { auth } from "~/auth";
 import { db } from "~/server/db";
 
 export default async function Page() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await auth()
 
   if (!session) {
     redirect("/auth/sign-in");
@@ -90,12 +87,12 @@ export default async function Page() {
     Object.keys(categorizedSongs).length === 0
   ) {
     return (
-      <div className="flex h-full flex-col items-center justify-center p-4 text-center">
-        <Music className="text-muted-foreground h-20 w-20" />
-        <h1 className="mt-4 text-2xl font-bold tracking-tight">
+      <div className="flex h-full flex-col items-center justify-center p-4 text-center bg-white">
+        <Music className="text-gray-400 h-20 w-20" />
+        <h1 className="mt-4 text-2xl font-bold tracking-tight text-gray-900">
           No Music Here
         </h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="text-gray-600 mt-2">
           There are no published songs available right now. Check back later!
         </p>
       </div>
@@ -103,13 +100,13 @@ export default async function Page() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold tracking-tight">Discover Music</h1>
+    <div className="p-4 bg-white min-h-screen">
+      <h1 className="text-3xl font-bold tracking-tight text-gray-900">Discover Music</h1>
 
       {/* Trending songs */}
       {trendingSongs.length > 0 && (
         <div className="mt-6">
-          <h2 className="text-xl font-semibold">Trending</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Trending</h2>
           <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {trendingSongs.map((song) => (
               <SongCard key={song.id} song={song} />
@@ -123,7 +120,7 @@ export default async function Page() {
         .slice(0, 5)
         .map(([category, songs]) => (
           <div key={category} className="mt-6">
-            <h2 className="text-xl font-semibold">{category}</h2>
+            <h2 className="text-xl font-semibold text-gray-900">{category}</h2>
             <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
               {songs.map((song) => (
                 <SongCard key={song.id} song={song} />
