@@ -4,6 +4,7 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
 import { SessionProvider } from "next-auth/react";
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: "MelodyAI - AI Music Generation",
@@ -24,6 +25,7 @@ export default function RootLayout({
 
     <html lang="en" className={`${geist.variable}`}>
       <body>
+        <Analytics/>
           {children}
           <Toaster />
       </body>
